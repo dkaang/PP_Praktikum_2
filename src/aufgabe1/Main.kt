@@ -10,7 +10,7 @@ val intOrd : Ordering <Int> = {
 }
 
 // ----- 1.1a) -----
-val strOrd : Ordering <String> = {
+val stringOrd : Ordering <String> = {
     left, right ->
         if ( left < right ) OrderResult.Lower
         else if ( left > right ) OrderResult.Higher
@@ -35,15 +35,15 @@ val boolOrd : Ordering <Boolean> = {
 
 // ----- 1.2a) -----
 //fun reversed(ordering: Ordering<A>)
-fun <A> reversed(ordering: Ordering<A>) : Ordering<A> =
-    { x, y -> ordering(y, x) }
+//fun <A> reversed(ordering: Ordering<A>) : Ordering<A> =
+//    { x, y -> ordering(y, x) }
 
-fun <A> debug(ordering: Ordering<A>) : Ordering<A> =
-    { left, right ->
-        val result = ordering(left, right)
-        println("'$left' is ${result.toString().uppercase()} than '$right'")
-        result
-    }
+//fun <A> debug(ordering: Ordering<A>) : Ordering<A> =
+//    { left, right ->
+//        val result = ordering(left, right)
+//        println("'$left' is ${result.toString().uppercase()} than '$right'")
+//        result
+//    }
 
 fun <A> none(ordering: Ordering<A>) : Ordering<A> =
     { _, _ -> OrderResult.Equal }
@@ -77,7 +77,7 @@ val personAgeOrd : Ordering <Person> = {
         else if ( left.age > right.age ) OrderResult.Higher
         else OrderResult.Equal
 }
-
+// für 1.3c) siehe unten in der Main
 
 // ----- 1.4a) -----
 // wenn 2 Werte beim ersten Ordering gleich sind, dann das Zweite auf die beiden benutzen
@@ -93,12 +93,12 @@ fun <A, B> zip(ordering1: Ordering<A>, ordering2: Ordering<B>) : Ordering<Pair<A
 
 
 //val ord : Ordering <Pair < String , Int >> = zip ( strOrd , intOrd )
-val ord: Ordering<Pair<Person, Person>> = zip(personNameOrd, personAgeOrd) // nicht wirklich gecheckt tbh
+//val ord: Ordering<Pair<Person, Person>> = zip(personNameOrd, personAgeOrd) // nicht wirklich gecheckt tbh
 
 
 
 
-
+/*
 fun main(){
     val intDesc = reversed ( intOrd )
     val strDebug = debug ( strOrd )
@@ -147,14 +147,65 @@ fun main(){
 //    )
 //    println(sorting.sort(people, ord))
 
+}
+ */
 
-
+fun main () {
+    val sorting = Sorting()
+    val people = listOf(
+                        Person("Nathalie", 25),
+                        Person("Alex", 33),
+                        Person("Zah", 28),
+                        Person("Alex", 18),
+                        Person("Jens", 33)
+    )
+//    val ord: Ordering<Person> = contraMap(
+//        ordering = zip(personNameOrd, personAgeOrd),
+//        transform = { person1: Person, person2: Person -> Pair<Person, Person>(person1, person2) }
+//    )
+//    println(sorting.sort(people, ord))
 }
 
 
+// Extension-Functions für reversed, debug, contraMap & zip
+fun <A> Ordering<A>.reversed() : Ordering<A> =
+    { x, y -> this(y, x) }
+
+fun <A> Ordering<A>.debug() : Ordering<A> =
+    { left, right ->
+        val result = this(left, right)
+        println("'$left' is ${result.toString().uppercase()} than '$right'")
+        result
+    }
+
+fun <A, B> Ordering<A>.contraMap(transform: (B) -> A) : Ordering<B> =
+    { left, right -> this(transform(left), transform(right)) }
+
+fun <A, B> Ordering<A>.zip(ordering2: Ordering<B>) : Ordering<Pair<A,B>> =
+    { left, right ->
+        val result = this(left.first, right.first)
+        if (result == OrderResult.Equal)
+            ordering2(left.second, right.second)
+        else
+            result
+    }
 
 
-
-//    strDebug("A", "a") // "A" kommt nach "a" in der Reihenfolge (so wie "1", "2")
-//    val testStrList: MutableList<String> = mutableListOf("a", "c", "b", "z", "q", "w", "r", "k", "l", "p", "c", "b")
-//    val testIntList: MutableList<Int> = mutableListOf(1,5,2,1,5,6,7,2,6712,612412,661,2231,661,17,8322,4,21,12,13,5,7)
+//fun main () {
+//    val sorting = Sorting ()
+//    val people = listOf (
+//        Person(" Nathalie", 25, 172.5),
+//        Person(" Alex", 33, 186.0),
+//        Person("Zah", 28, 158.3),
+//        Person(" Alex", 18, 183.0),
+//        Person(" Jens", 33, 168.5),
+//    )
+//    val personOrd : Ordering <Person > =
+//        stringOrd
+//            .zip ( intOrd.reversed() )
+//            .zip ( doubleOrd )
+//            .contraMap { person ->
+//                person.name to person.age to person.height // kürzere Schreibweise für Pair(Pair(person.name, person.age), person.height)
+//            }
+//    println(sorting.sort(people, personOrd))
+//}

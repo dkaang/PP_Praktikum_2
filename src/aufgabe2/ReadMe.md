@@ -21,6 +21,13 @@
 - __--__--__--__--__--__-__-__-__-__
 - Antwort: Ja, die Terme sind äquivalent, weil: A+B+1 <=> A+1+B
 
+> c)
+-  ---> a^0 = 1 <---
+-  a <-- 0
+-  0 --> a
+-  → Nothing -> A
+- (für Implementation der Methoden, siehe aufgabe2/Main.kt)
+
 > d) Warum kann die from-Funktion implementiert werden, obwohl nur ein Nothing zur Verfügung steht, aber ein Wert vom Typ A zurückgegeben werden muss? 
 >> Hinweis: Die Antwort liegt im Subtyping-System von Kotlin.
 - "The unified supertype type for all types in Kotlin is "kotlin.Any?", a nullable version of "kotlin.Any". The unified subtype type for all types in Kotlin is "kotlin.Nothing".
